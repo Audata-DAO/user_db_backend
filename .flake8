@@ -1,0 +1,10 @@
+[flake8]
+
+exclude =
+    .venv/
+    __pycache__,
+    migrations,
+
+max-line-length = 120
+
+extend-ignore = D
