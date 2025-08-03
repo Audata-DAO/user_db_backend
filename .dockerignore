@@ -44,3 +44,5 @@ logs/
 
 # Git repo
 .git
+
+test/

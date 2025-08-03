@@ -14,15 +14,14 @@ def parse_cors(v: Any) -> list[str]:
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="../.env",
+        env_file=".env",
         extra="ignore",
         env_ignore_empty=True,
     )
 
     # General
-    API_V1_STR: str = "/api/v1"
     SECRET_KEY: str
-    PROJECT_NAME: str = "Audata API service"
+    PROJECT_NAME: str = "Audata API"
     FRONTEND_HOST: str = "http://localhost:3000"
 
     # CORS
@@ -35,7 +34,9 @@ class Settings(BaseSettings):
 
     @property
     def all_cors_origins(self) -> list[str]:
-        return [str(origin).rstrip("/") for origin in (self.BACKEND_CORS_ORIGINS or [])] + [self.FRONTEND_HOST]
+        return [
+            str(origin).rstrip("/") for origin in (self.BACKEND_CORS_ORIGINS or [])
+        ] + [self.FRONTEND_HOST]
 
     # Database
     POSTGRES_SERVER: str
@@ -60,4 +61,4 @@ class Settings(BaseSettings):
         )
 
 
-settings = Settings()
+settings = Settings()  # type: ignore

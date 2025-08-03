@@ -13,9 +13,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-from sqlmodel import SQLModel  # noqa: E402
-
-import app.domains.users.models  # noqa: F401, E402
+from app.core.models import SQLModel # noqa: F401, E402
 
 target_metadata = SQLModel.metadata
 
