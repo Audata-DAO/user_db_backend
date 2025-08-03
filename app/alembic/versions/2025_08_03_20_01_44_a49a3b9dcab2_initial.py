@@ -1,8 +1,8 @@
-"""empty message
+"""initial
 
-Revision ID: d763fbe11453
+Revision ID: a49a3b9dcab2
 Revises: 
-Create Date: 2025-08-03 08:47:07.858881
+Create Date: 2025-08-03 20:01:44.863296
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd763fbe11453'
+revision: str = 'a49a3b9dcab2'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

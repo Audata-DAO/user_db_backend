@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 
 from app.core.db import SessionDep
-from app.core.models import UserIn, Users
+from app.domains.users.schemas import UserIn
+from app.domains.users.models import Users
 
 users_router = APIRouter(prefix="/users")
 
