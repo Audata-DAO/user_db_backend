@@ -1,6 +1,8 @@
 from fastapi import HTTPException
-from sqlalchemy.exc import IntegrityError
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.exc import IntegrityError, MultipleResultsFound
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
+from sqlalchemy.exc import NoResultFound
 
 from app.domains.users.models import User, UserMetadata
 from app.domains.users.schemas import UserIn, UserMetadataIn
@@ -58,3 +60,16 @@ async def create_user_metadata(user_metadata_in: UserMetadataIn, session: AsyncS
         raise HTTPException(status_code=400, detail="Такого пользователя не существует!")
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+async def get_user_metadata(user_wallet_address: str, session: AsyncSession):
+    statement = select(UserMetadata).where(UserMetadata.userAddress==user_wallet_address)
+    result = await session.execute(statement)
+    try:
+        user_metadata = result.one()
+    except NoResultFound:
+        raise HTTPException(404, "No user with such wallet_id found")
+    except MultipleResultsFound:
+        raise HTTPException(500, "Multiple results found, clear the db")
+    return user_metadata
+
