@@ -1,8 +1,7 @@
 from fastapi import HTTPException
-from sqlalchemy.exc import IntegrityError, MultipleResultsFound
+from sqlalchemy.exc import IntegrityError, MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from sqlalchemy.exc import NoResultFound
 
 from app.domains.users.models import User, UserMetadata
 from app.domains.users.schemas import UserIn, UserMetadataIn
@@ -19,6 +18,12 @@ async def create_user(user_in: UserIn, session: AsyncSession) -> User:
         return user
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+async def get_user(wallet_address: str, session: AsyncSession) -> User | None:
+    statement = select(User).where(User.address == wallet_address)
+    result = await session.execute(statement)
+    return result.scalar_one_or_none()
 
 
 """===============РЕАЛИЗАЦИЯ С КООРДИНАТАМИ================================"""
@@ -63,7 +68,7 @@ async def create_user_metadata(user_metadata_in: UserMetadataIn, session: AsyncS
 
 
 async def get_user_metadata(user_wallet_address: str, session: AsyncSession):
-    statement = select(UserMetadata).where(UserMetadata.userAddress==user_wallet_address)
+    statement = select(UserMetadata).where(UserMetadata.userAddress == user_wallet_address)
     result = await session.execute(statement)
     try:
         user_metadata = result.one()
@@ -72,4 +77,3 @@ async def get_user_metadata(user_wallet_address: str, session: AsyncSession):
     except MultipleResultsFound:
         raise HTTPException(500, "Multiple results found, clear the db")
     return user_metadata
-
