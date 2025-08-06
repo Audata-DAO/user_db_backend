@@ -11,6 +11,7 @@ class User(SQLModel, table=True):
     chainId: str = Field(default="")
     connectedAt: datetime = Field(default_factory=datetime.now)
     lastActivity: datetime = Field(default_factory=datetime.now)
+    violations: int = 0
 
     user_metadata: Optional["UserMetadata"] = Relationship(back_populates="user")
 
@@ -27,3 +28,10 @@ class UserMetadata(SQLModel, table=True):
     submittedAt: datetime = Field(default_factory=datetime.now)
 
     user: User = Relationship(back_populates="user_metadata")
+
+# Used by PoC
+class Fingerprints(SQLModel, table=True):
+    # The id must be None because it's set by db automatically
+    id: int | None = Field(default=None, primary_key=True)
+    fprint: bytes
+    duration: float
