@@ -11,7 +11,7 @@ class User(SQLModel, table=True):
     chainId: str = Field(default="")
     connectedAt: datetime = Field(default_factory=datetime.now)
     lastActivity: datetime = Field(default_factory=datetime.now)
-    violations: int = 0
+    violations: int = Field(default=0)
 
     user_metadata: Optional["UserMetadata"] = Relationship(back_populates="user")
 
