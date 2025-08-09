@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -8,7 +10,14 @@ class UserIn(BaseModel):
 
 class UserMetadataIn(BaseModel):
     userAddress: str
+    countryCode: str
     country: str
     birthMonth: str
     birthYear: str
     isItRelated: bool
+    region: str
+
+
+class UserStatisticsIn(BaseModel):
+    userAddress: str
+    audioLength: float
