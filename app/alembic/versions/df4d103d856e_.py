@@ -48,13 +48,6 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['userAddress'], ['users.address'], ),
     sa.PrimaryKeyConstraint('userAddress')
     )
-    op.create_table('user_statistics',
-    sa.Column('userAddress', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('audioLength', sa.Float(), nullable=False),
-    sa.Column('time', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['userAddress'], ['users.address'], ),
-    sa.PrimaryKeyConstraint('userAddress')
-    )
     # ### end Alembic commands ###
 
 

@@ -34,7 +34,8 @@ class UserMetadata(SQLModel, table=True):
 class UserStatistics(SQLModel, table=True):
     __tablename__ = "user_statistics"
 
-    userAddress: str = Field(default=None, foreign_key="users.address", primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
+    userAddress: str
     audioLength: float
     time: datetime = Field(default_factory=datetime.now)
 
