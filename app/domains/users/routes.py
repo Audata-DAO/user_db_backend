@@ -38,5 +38,6 @@ async def get_user_metadata_route(user_wallet_address: str, session: SessionDep)
 async def create_statistics_entry_route(
     user_statistics: schemas.UserStatisticsIn, session: SessionDep
 ):
+    print(user_statistics)
     r = await utils.create_statistics_entry(user_statistics, session)
     return r
