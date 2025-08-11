@@ -26,18 +26,10 @@ class UserMetadata(SQLModel, table=True):
     birthMonth: str
     birthYear: str
     isItRelated: bool = False
+    contributedSeconds: float = Field(default=0)
     submittedAt: datetime = Field(default_factory=datetime.now)
 
     user: User = Relationship(back_populates="user_metadata")
-
-
-class UserStatistics(SQLModel, table=True):
-    __tablename__ = "user_statistics"
-
-    id: int | None = Field(default=None, primary_key=True)
-    userAddress: str
-    audioLength: float
-    time: datetime = Field(default_factory=datetime.now)
 
 
 # Used by PoC

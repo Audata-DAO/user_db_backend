@@ -1,9 +1,10 @@
 from fastapi import HTTPException
+from sqlmodel import desc, select
 from sqlalchemy.exc import IntegrityError, MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domains.users.models import User, UserMetadata, UserStatistics
+from app.domains.users.models import User, UserMetadata
 from app.domains.users.schemas import UserIn, UserMetadataIn, UserStatisticsIn
 
 
@@ -85,16 +86,31 @@ async def get_user_metadata(user_wallet_address: str, session: AsyncSession):
     return user_metadata
 
 
-async def create_statistics_entry(
-        user_statistics_in: UserStatisticsIn, session: AsyncSession
+async def update_contributed_seconds(
+    user_stat_in: UserStatisticsIn, session: AsyncSession
 ):
     try:
-        user_statistics = UserStatistics(**user_statistics_in.model_dump())
+        metadata = await session.get(UserMetadata, user_stat_in.userAddress)
+        if not metadata:
+            raise HTTPException(status_code=404, detail="User not found")
 
-        session.add(user_statistics)
+        metadata.contributedSeconds += user_stat_in.audioLength
+        session.add(metadata)
         await session.commit()
-        await session.refresh(user_statistics)
-
-        return user_statistics
+        await session.refresh(metadata)
+        return metadata
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+async def get_leaders(amount, session: AsyncSession):
+    try:
+        users = await session.execute(
+            select(UserMetadata)
+            .order_by(UserMetadata.contributedSeconds.desc())
+            .limit(amount)
+        )
+        return users.scalars().all()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

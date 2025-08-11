@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from pydantic import BaseModel
+from sqlmodel import Field
 
 
 class UserIn(BaseModel):
@@ -20,4 +21,4 @@ class UserMetadataIn(BaseModel):
 
 class UserStatisticsIn(BaseModel):
     userAddress: str
-    audioLength: float
+    audioLength: float = Field(gt=0.0)

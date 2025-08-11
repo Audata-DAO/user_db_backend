@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Query
 
 from app.domains.users import schemas
 from app.core.db import SessionDep
@@ -34,10 +34,16 @@ async def get_user_metadata_route(user_wallet_address: str, session: SessionDep)
     return r[0]
 
 
-@router.post("/stat")
-async def create_statistics_entry_route(
+@router.post("/contribute")
+async def update_user_contributed_seconds(
     user_statistics: schemas.UserStatisticsIn, session: SessionDep
 ):
     print(user_statistics)
-    r = await utils.create_statistics_entry(user_statistics, session)
+    r = await utils.update_contributed_seconds(user_statistics, session)
+    return r
+
+
+@router.get("/leaders")
+async def get_leaders_route(session: SessionDep, amount: int = Query(gt=0)):
+    r = await utils.get_leaders(amount, session)
     return r
