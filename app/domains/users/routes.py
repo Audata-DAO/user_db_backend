@@ -13,7 +13,7 @@ async def signup(user_in: schemas.UserIn, session: SessionDep):
     # check if user already exists
     user = await utils.get_user(user_in.address, session)
     if user:
-        raise HTTPException(status_code=400, detail="Пользователь уже зарегистрирован!")
+        return user
 
     user = await utils.create_user(user_in, session)
     return user
