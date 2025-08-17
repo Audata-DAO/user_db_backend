@@ -1,11 +1,18 @@
 from fastapi import HTTPException
-from sqlmodel import desc, select
+from sqlmodel import desc, select, text, func
 from sqlalchemy.exc import IntegrityError, MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domains.users.models import User, UserMetadata
-from app.domains.users.schemas import UserIn, UserMetadataIn, UserStatisticsIn
+from app.domains.users.schemas import (
+    Leader,
+    Leaders,
+    StatisticsOut,
+    UserIn,
+    UserMetadataIn,
+    UserStatisticsIn,
+)
 
 
 async def create_user(user_in: UserIn, session: AsyncSession) -> User:
@@ -103,14 +110,38 @@ async def update_contributed_seconds(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-async def get_leaders(amount, session: AsyncSession):
+async def get_statistics(amount, session: AsyncSession):
     try:
         users = await session.execute(
             select(UserMetadata)
             .order_by(UserMetadata.contributedSeconds.desc())
             .limit(amount)
         )
-        return users.scalars().all()
+        leaders = users.scalars().all()
+
+        user_amount = await session.execute(
+            select(func.count(UserMetadata.userAddress))
+        )
+        user_amount = user_amount.scalar()
+
+        second_amount = await session.execute(
+            select(func.sum(UserMetadata.contributedSeconds))
+        )
+        second_amount = second_amount.scalar()
+
+        return StatisticsOut(
+            totalUsers=user_amount,
+            totalSeconds=second_amount,
+            leaders=Leaders(
+                leaders=[
+                    Leader(
+                        userAddress=leader.userAddress,
+                        contributedSeconds=leader.contributedSeconds,
+                    )
+                    for leader in leaders
+                ]
+            ),
+        )
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-

@@ -19,7 +19,9 @@ class User(SQLModel, table=True):
 class UserMetadata(SQLModel, table=True):
     __tablename__ = "user_metadata"
 
-    userAddress: str = Field(default=None, foreign_key="users.address", primary_key=True)
+    userAddress: str = Field(
+        default=None, foreign_key="users.address", primary_key=True
+    )
     countryCode: str
     country: str
     region: str

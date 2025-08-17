@@ -22,3 +22,18 @@ class UserMetadataIn(BaseModel):
 class UserStatisticsIn(BaseModel):
     userAddress: str
     audioLength: float = Field(gt=0.0)
+
+
+class Leader(BaseModel):
+    userAddress: str
+    contributedSeconds: float
+
+
+class Leaders(BaseModel):
+    leaders: list[Leader]
+
+
+class StatisticsOut(BaseModel):
+    totalUsers: int
+    totalSeconds: float
+    leaders: Leaders
