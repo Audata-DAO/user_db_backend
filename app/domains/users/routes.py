@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Query
+from typing import Annotated
+from fastapi import APIRouter, Query, Body
 
 from app.domains.users import schemas
 from app.core.db import SessionDep
@@ -50,6 +51,6 @@ async def get_statistics_route(session: SessionDep, amount: int = Query(gt=0, de
 
 
 @router.post("/email")
-async def create_email_route(session: SessionDep, email: str):
+async def create_email_route(session: SessionDep, email: Annotated[str, Body()]):
     r = await utils.create_email(email, session)
     return r
