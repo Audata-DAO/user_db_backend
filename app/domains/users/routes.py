@@ -44,6 +44,12 @@ async def update_user_contributed_seconds(
 
 
 @router.get("/stat")
-async def get_leaders_route(session: SessionDep, amount: int = Query(gt=0, default=5)):
+async def get_statistics_route(session: SessionDep, amount: int = Query(gt=0, default=5)):
     r = await utils.get_statistics(amount, session)
+    return r
+
+
+@router.post("/email")
+async def create_email_route(session: SessionDep, email: str):
+    r = await utils.create_email(email, session)
     return r

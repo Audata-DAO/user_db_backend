@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError, MultipleResultsFound, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domains.users.models import User, UserMetadata
+from app.domains.users.models import Emails, User, UserMetadata
 from app.domains.users.schemas import (
     Leader,
     Leaders,
@@ -114,7 +114,7 @@ async def get_statistics(amount, session: AsyncSession):
     try:
         users = await session.execute(
             select(UserMetadata)
-            .order_by(UserMetadata.contributedSeconds.desc())
+            .order_by(UserMetadata.contributedSeconds.desc()) # type: ignore
             .limit(amount)
         )
         leaders = users.scalars().all()
@@ -143,5 +143,18 @@ async def get_statistics(amount, session: AsyncSession):
             ),
         )
 
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+async def create_email(user_email: str, session: AsyncSession):
+    try:
+        email = Emails(email=user_email)
+
+        session.add(email)
+        await session.commit()
+        await session.refresh(email)
+
+        return email
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
