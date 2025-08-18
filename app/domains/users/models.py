@@ -40,3 +40,9 @@ class Fingerprints(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     fprint: bytes
     duration: float
+
+
+class Emails(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    email: str
+    submittedAt: datetime = Field(default_factory=datetime.now)
